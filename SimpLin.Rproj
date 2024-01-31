@@ -17,4 +17,5 @@ StripTrailingWhitespace: Yes
 
 BuildType: Package
 PackageUseDevtools: Yes
+PackagePath: /Users/laurenquesada/Desktop/600/SimpLin
 PackageInstallArgs: --no-multiarch --with-keep.source

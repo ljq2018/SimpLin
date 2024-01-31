@@ -10,19 +10,34 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
-// rcpp_hello
-List rcpp_hello();
-RcppExport SEXP _SimpLin_rcpp_hello() {
+// SimpLin
+DataFrame SimpLin(arma:: vec x, arma:: vec y);
+RcppExport SEXP _SimpLin_SimpLin(SEXP xSEXP, SEXP ySEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    rcpp_result_gen = Rcpp::wrap(rcpp_hello());
+    Rcpp::traits::input_parameter< arma:: vec >::type x(xSEXP);
+    Rcpp::traits::input_parameter< arma:: vec >::type y(ySEXP);
+    rcpp_result_gen = Rcpp::wrap(SimpLin(x, y));
+    return rcpp_result_gen;
+END_RCPP
+}
+// SimpLin
+arma:: colvec SimpLin(arma:: vec x, arma:: vec y);
+RcppExport SEXP _SimpLin_SimpLin(SEXP xSEXP, SEXP ySEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma:: vec >::type x(xSEXP);
+    Rcpp::traits::input_parameter< arma:: vec >::type y(ySEXP);
+    rcpp_result_gen = Rcpp::wrap(SimpLin(x, y));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_SimpLin_rcpp_hello", (DL_FUNC) &_SimpLin_rcpp_hello, 0},
+    {"_SimpLin_SimpLin", (DL_FUNC) &_SimpLin_SimpLin, 2},
+    {"_SimpLin_SimpLin", (DL_FUNC) &_SimpLin_SimpLin, 2},
     {NULL, NULL, 0}
 };
 
