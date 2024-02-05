@@ -29,11 +29,5 @@ List SimpLin(arma::vec x, arma::vec y) {
 }
 
 
-/*** R
-library(Rcpp)
-library(RcppArmadillo)
-x <- c(1,1,1)
-y <- c(4,5,8)
-SimpLin(x,y)
-*/
+
 
