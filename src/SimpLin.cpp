@@ -28,6 +28,3 @@ List SimpLin(arma::vec x, arma::vec y) {
   return model;
 }
 
-
-
-
