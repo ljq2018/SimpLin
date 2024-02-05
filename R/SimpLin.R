@@ -40,3 +40,4 @@ SimpLin1(X,Y)
 
 library("Rcpp")
 sourceCpp("SimpLin.cpp")
+

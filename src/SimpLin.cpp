@@ -1,43 +1,39 @@
-
 #include <RcppArmadillo.h>
 // [[Rcpp::depends(RcppArmadillo)]]
-
 using namespace Rcpp;
 
-//[[Rcpp::export()]]
-DataFrame SimpLin(arma:: vec x, arma:: vec y){
 
-  int n = x.size();
-  int l = y.size();
+// [[Rcpp::export]]
+List SimpLin(arma::vec x, arma::vec y) {
+  int n = x.n_elem;
+  arma::vec z(n, arma::fill::ones);
+  arma::mat X = arma::join_rows(z,x);
+  arma::mat Xt = arma::trans(X);
+  arma::mat beta = arma::inv(Xt * X) * Xt * y;
+  arma::mat y_hat = X * beta;
+  arma::mat res = y - y_hat;
+  double MSE = (arma::trans(res) * res / (n-2))[0];
+  arma::mat SE_mat = sqrt(arma::inv(Xt * X) * MSE);
+  arma::mat SE = SE_mat.diag();
+  double t = R::qt(0.975, n -2, 1, 0);
+  arma::mat beta_UB = beta + t * SE;
+  arma::mat beta_LB = beta - t * SE;
+  arma::mat beta_CI = arma::join_rows(beta_LB,beta_UB);
 
-  if (n != l)Rcpp:: stop("X and Y must have the same length");
-
-  arma:: mat ones = x.ones();
-  arma:: mat x_mat = join_cols(ones, x);
-
-  arma:: mat betas = inv(x_mat.t()*x_mat)*x_mat.t()*y;
-
-  arma:: mat y_hat = x_mat*betas;
-
-  arma:: vec diff_sq = square(y-y_hat);
-
-  int mse = sum(diff_sq)/n;
-  arma:: mat var_mat = mse*inv(x_mat.t()*x_mat);
-  arma:: vec stderr = sqrt(var_mat.diag());
-
-  arma:: mat lower_ci = betas - R::qt(0.975,n-2,1,0)*stderr;
-  arma:: mat upper_ci = betas + R::qt(0.975,n-2,1,0)*stderr;
-
-  CharacterVector v = {"beta0", "beta1"};
-
-  DataFrame df = DataFrame::create(Named("coeff") = v,
-                                   Named("values") = betas,
-                                   Named("stderr") = stderr,
-                                   Named("lower_ci") = lower_ci,
-                                   Named("upper_ci") = upper_ci);
-
- return df;
+  List model = List::create( Named("coefficients") = beta,
+                             Named("SE") = SE,
+                             Named("CI") = beta_CI,
+                             Named("residuals") = res,
+                             Named("predicted") = y_hat);
+  return model;
 }
 
 
+/*** R
+library(Rcpp)
+library(RcppArmadillo)
+x <- c(1,1,1)
+y <- c(4,5,8)
+SimpLin(x,y)
+*/
 
